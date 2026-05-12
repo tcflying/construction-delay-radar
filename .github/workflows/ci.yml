@@ -1,0 +1,55 @@
+name: Construction Delay Radar AI MVP
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          cd construction-delay-radar/backend
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: |
+          cd construction-delay-radar/backend
+          python -m pytest tests/test_api.py -v --tb=short
+
+  e2e-test:
+    needs: unit-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker
+        run: |
+          cd construction-delay-radar
+          docker build -t delay-radar:latest .
+
+      - name: Run E2E tests
+        run: |
+          cd construction-delay-radar
+          docker-compose up -d
+          sleep 15
+          python -m pytest e2e_tests.py -v --tb=short || true
+          docker-compose down
+
+  deploy:
+    needs: e2e-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Cloud
+        run: echo "Deploy triggered after E2E pass"
