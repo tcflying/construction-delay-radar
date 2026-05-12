@@ -19,7 +19,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd construction-delay-radar/backend
           pip install -r requirements.txt
 
       - name: Run unit tests
@@ -33,18 +32,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Docker
+      - name: Build and start services
         run: |
-          cd construction-delay-radar
-          docker build -t delay-radar:latest .
+          docker-compose up -d --build
+          sleep 20
 
       - name: Run E2E tests
         run: |
-          cd construction-delay-radar
-          docker-compose up -d
-          sleep 15
           python -m pytest e2e_tests.py -v --tb=short || true
-          docker-compose down
+
+      - name: Stop services
+        if: always()
+        run: docker-compose down
 
   deploy:
     needs: e2e-test
