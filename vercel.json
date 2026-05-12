@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "landing-page.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "client-communication-templates.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/",
+      "dest": "landing-page.html"
+    },
+    {
+      "src": "/templates",
+      "dest": "client-communication-templates.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "landing-page.html"
+    }
+  ]
+}
