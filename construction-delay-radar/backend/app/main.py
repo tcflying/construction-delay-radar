@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from app.api.endpoints import health, projects, predictions
+from app.api.endpoints import health, projects, predictions, model
 from app.core.config import settings
 
 
@@ -28,3 +28,4 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api", tags=["health"])
 app.include_router(projects.router, prefix="/api/projects", tags=["projects"])
 app.include_router(predictions.router, prefix="/api/predict", tags=["predictions"])
+app.include_router(model.router, prefix="/api", tags=["model"])

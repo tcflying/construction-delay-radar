@@ -1,6 +1,8 @@
 services:
   api:
-    build: .
+    build:
+      context: ./construction-delay-radar
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
@@ -9,7 +11,9 @@ services:
       - ./data:/app/data
 
   streamlit:
-    build: .
+    build:
+      context: ./construction-delay-radar/frontend
+      dockerfile: Dockerfile
     ports:
       - "8501:8501"
     depends_on:
